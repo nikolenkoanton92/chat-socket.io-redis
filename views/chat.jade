@@ -1,0 +1,22 @@
+extends layout
+
+block content
+
+  #channel
+    #msgs
+      h4  Server
+      h4
+        a(href='/logout')  Logout
+
+      ul
+        li.message
+          span.user
+          span.message
+          span.time
+        li.control
+          span.user
+          span.message
+          span.time
+    #input
+      form
+        input(type='text')#message

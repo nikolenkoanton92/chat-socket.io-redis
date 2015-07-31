@@ -1,0 +1,14 @@
+extends layout
+
+block content
+
+  .container
+    .row.login
+      h2.text-center  Login Page
+    .row.login-form
+      .form-inline.text-center
+        .form-group
+          label(for="username")  Username
+          input(type="text", placeholder="username", name="username")#username.form-control
+        button(type="button").btn.btn-default#login  Log In
+
