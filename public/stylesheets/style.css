@@ -16,8 +16,9 @@ a {
 }
 
 
-/*Chat styles*/
-
+a:hover {
+    text-decoration: underline;
+}
 
 div.bordered {
     margin: 0 auto;
@@ -68,7 +69,7 @@ div.bordered {
 
 div#msgs {
     overflow-y: scroll;
-    height: 400px;
+    height: 380px;
 }
 
 div#msgs ul {
@@ -108,11 +109,11 @@ div#msgs li.control span.message {
 
 div#input {
     text-align: left;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 div#input #message {
-    width: 600px;
+    width: 559px;
     border: 5px solid #bbb;
     -webkit-border-radius: 3px;
     font-size: 30pt;

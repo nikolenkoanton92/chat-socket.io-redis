@@ -24,12 +24,13 @@ var server = http.createServer(app);
 
 
 // setup socket.io
+// var socketIO = require('socket.io');
+// var io = socketIO(server);
 
-var socketIO = require('socket.io');
-var io = socketIO(server);
+var io = require('socket.io')(server);
 var SessionSocket = require('session.socket.io');
 var sessionSockets = new SessionSocket(io, app.sessionStore, app.cookieParser);
-var setEvents = require('../server-socket');
+var setEvents = require('../events');
 setEvents(sessionSockets);
 
 /**

@@ -1,5 +1,29 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  b  Server:
+  |  #{server}
+  if user
+    b  User :
+    label#user  #{user}
+    a(href='/logout')  Log Out
+  #ask.bordered(style="display: none")
+    |  Name
+    input(type="text")#name
+    a(href="#")
+      span.join  Join!
+  #channel.bordered(style="display: none;")
+    #msgs
+      h4  Server: #{server}
+      ul
+        li.message(style="display:none;")
+          span.user
+          span.message
+          span.time
+        li.control(style="display:none;")
+          span.user
+          span.message
+          span.time
+    #input
+      form
+        input(type="text")#message
