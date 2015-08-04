@@ -6,7 +6,6 @@ sub.subscribe('chat');
 
 module.exports = function(io) {
   io.on('connection', function(err, socket, session) {
-
     if (!session.user) return;
 
     /*
@@ -18,7 +17,7 @@ module.exports = function(io) {
       var msg = JSON.parse(data);
       var reply = JSON.stringify({
         action: 'message',
-        user: session.user,
+        user: session.user.username,
         msg: msg.msg
       });
       pub.publish('chat', reply);
@@ -32,7 +31,7 @@ module.exports = function(io) {
     socket.on('join', function() {
       var reply = JSON.stringify({
         action: 'control',
-        user: session.user,
+        user: session.user.username,
         msg: ' joined the channel'
       });
       pub.publish('chat', reply);

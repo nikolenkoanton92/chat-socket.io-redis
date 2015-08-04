@@ -7,6 +7,7 @@ $(document).ready(function() {
     $('#ask').show();
     $('#ask input#name').focus();
   } else { //rejoin using old session
+    console.log('hello from join')
     join(user);
   }
 
@@ -22,15 +23,32 @@ $(document).ready(function() {
    initializes Socket.io and the entire app.
    */
   $('#ask a').click(function() {
-    join($('#ask input#name').val(), $('#ask input#password').val());
+    join($('#ask input#name').val());
   });
 
-  function join(name, password) {
+  function join(name) {
     console.log('come to function join')
-    console.log(password)
+      // console.log(password)
     $('#ask').hide();
     $('#channel').show();
     $('input#message').focus();
+
+    console.log('before post request')
+    console.log(name)
+      // console.log(password)
+    $.post('/user', {
+        "username": name,
+        // "password": password
+        // "username": "anton",
+        // "password": "123321"
+      })
+      .success(function(response) {
+        console.log(response)
+        console.log('ajax post join to socket.io')
+        socket.emit('join', JSON.stringify({}));
+      }).error(function() {
+        console.log("error");
+      });
     /*
      Connect to socket.io on the server.
      */
@@ -90,16 +108,7 @@ $(document).ready(function() {
     /*
      When the user Logs in, send a HTTP POST to server w/ user name.
      */
-    $.post('/user', {
-        "username": name,
-        "password": password
-      })
-      .success(function() {
-        console.log('ajax post join to socket.io')
-        socket.emit('join', JSON.stringify({}));
-      }).error(function() {
-        console.log("error");
-      });
+
 
     var container = $('div#msgs');
 

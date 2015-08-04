@@ -6,14 +6,24 @@ block content
     .row.login
       h2.text-center  Login Page
     .row.login-form
-      #ask.bordered(style='display: none')
-        |  Name
-        input(type="text")#name
-        br
-        |  Password
-        input(type="password")#password
-        a(href='/')
-          span.join  Join!
+      .col-xs-6.col-xs-offset-4
+        form(action="/login", method="POST")
+          div
+            label(for="username")  Username
+            input(name="username", type="text")
+          div
+            label(for="password")  Password
+            input(name="password", type="password")
+          div
+            button(type="submit")  Log In
+      //- #ask.bordered(style='display: none')
+      //-   |  Name
+      //-   input(type="text")#name
+      //-   br
+      //-   |  Password
+      //-   input(type="password")
+      //-   a(href='/')
+      //-     span.join  Join!
       //- .form-inline.text-center
       //-   .form-group
       //-     label(for="username")  Username

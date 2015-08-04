@@ -54,21 +54,21 @@ mongoose.connect('mongodb://127.0.0.1:27017/account', function(err) {
     console.log(err);
   }
 });
-// app.use('/', routes);
 
-app.post('/user', passport.authenticate('local'), function(req, res, next) {
+app.post('/user', function(req, res) {
+  req.session.user = req.body.user;
+  res.json({
+    "error": ""
+  });
+});
+
+app.post('/login', passport.authenticate('local'), function(req, res, next) {
   req.session.save(function(err) {
     if (err) {
       return next(err);
     }
-    res.json({
-      "error": ""
-    });
+    res.redirect('/');
   });
-  // req.session.user = req.body.user;
-  // req.session.password = req.body.password;
-  // console.log('password', req.body.password)
-
 });
 
 
@@ -76,19 +76,12 @@ app.get('/', function(req, res, next) {
   var serverName = process.env.VCAP_APP_HOST ? process.env.VCAP_APP_HOST + ":" + process.env.VCAP_APP_PORT : 'localhost:3000';
   var user = req.session.user;
   var password = req.session.password;
-  console.log('user in mongoose session', req.user)
-  console.log('user session : ', req.session.user)
   if (req.user) {
-    // if (user === 'ant' && password === '123321') {
-
-    // req.session.regenerate(function(err) {
-    req.session.user = req.user.username;
+    req.session.user = req.user;
     res.render('index', {
       title: 'Express',
       server: serverName,
-      user: req.user.username
-        // user: req.session.user
-        // });
+      user: req.session.user
     });
   } else {
     res.redirect('/login');
@@ -99,7 +92,8 @@ app.get('/login', function(req, res) {
   res.render('login');
 });
 
-app.get('/logout', function(req, res) {
+app.get('/logout', function(req, res, next) {
+  req.logout();
   req.session.destroy();
   res.redirect('/login');
 });

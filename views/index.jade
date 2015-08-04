@@ -5,7 +5,7 @@ block content
   |  #{server}
   if user
     b  User :
-    label#user  #{user}
+    label#user  #{user.username}
     a(href='/logout')  Log Out
   #channel.bordered
     #msgs
