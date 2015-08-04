@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  form(action="/signup", method="POST")
+    div
+      label(for="username")  Username
+      input(name="username", type="text")
+    div
+      label(for="password")  Password
+      input(name="password", type="password")
+    div
+      button(type="submit")  Sign Up

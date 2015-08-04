@@ -6,10 +6,18 @@ block content
     .row.login
       h2.text-center  Login Page
     .row.login-form
-      .form-inline.text-center
-        .form-group
-          label(for="username")  Username
-          input(type="text", placeholder="username", name="username")#username.form-control
-        a(href="/")
-          button(type="button").btn.btn-default#login  Log In
+      #ask.bordered(style='display: none')
+        |  Name
+        input(type="text")#name
+        br
+        |  Password
+        input(type="password")#password
+        a(href='/')
+          span.join  Join!
+      //- .form-inline.text-center
+      //-   .form-group
+      //-     label(for="username")  Username
+      //-     input(type="text", placeholder="username", name="username")#username.form-control
+      //-   a(href="/")
+      //-     button(type="button").btn.btn-default#login  Log In
 

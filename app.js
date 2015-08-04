@@ -13,6 +13,10 @@ var sessionStore = new RedisStore({
   client: rClient
 });
 
+var passport = require('passport');
+var mongoose = require('mongoose');
+var Account = require('./models/account');
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
@@ -34,63 +38,97 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
 
-app.post('/user', function(req, res) {
-  req.session.user = req.body.user;
-  res.json({
-    "error": ""
+passport.use(Account.createStrategy());
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
+
+mongoose.connect('mongodb://127.0.0.1:27017/account', function(err) {
+  if (err) {
+    console.log(err);
+  }
+});
+// app.use('/', routes);
+
+app.post('/user', passport.authenticate('local'), function(req, res, next) {
+  req.session.save(function(err) {
+    if (err) {
+      return next(err);
+    }
+    res.json({
+      "error": ""
+    });
   });
+  // req.session.user = req.body.user;
+  // req.session.password = req.body.password;
+  // console.log('password', req.body.password)
+
+});
+
+
+app.get('/', function(req, res, next) {
+  var serverName = process.env.VCAP_APP_HOST ? process.env.VCAP_APP_HOST + ":" + process.env.VCAP_APP_PORT : 'localhost:3000';
+  var user = req.session.user;
+  var password = req.session.password;
+  console.log('user in mongoose session', req.user)
+  console.log('user session : ', req.session.user)
+  if (req.user) {
+    // if (user === 'ant' && password === '123321') {
+
+    // req.session.regenerate(function(err) {
+    req.session.user = req.user.username;
+    res.render('index', {
+      title: 'Express',
+      server: serverName,
+      user: req.user.username
+        // user: req.session.user
+        // });
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
+
+app.get('/login', function(req, res) {
+  res.render('login');
 });
 
 app.get('/logout', function(req, res) {
   req.session.destroy();
-  res.redirect('/');
+  res.redirect('/login');
 });
-// app.use('/users', users);
 
-// app.get('/', function(req, res, next) {
-//   console.log('index/chat page')
-//   console.log(req.session.user)
+app.get('/signup', function(req, res) {
+  res.render('signup');
+});
 
-//   if (!req.session.user || req.session.user === undefined) {
-//     res.redirect('/login');
-//   } else {
-//     var user = req.session.user;
-//     req.session.regenerate(function(err) {
-//       req.session.user = user;
-//       res.render('chat', {
-//         title: 'Express',
-//       });
-//     });
-//   }
-// });
-
-// app.get('/login', function(req, res) {
-//   res.render('login');
-// });
-
-// app.post('/login', function(req, res) {
-//   console.log('----------------------')
-//   console.log(req.body)
-//   req.session.user = req.body.username;
-//   // res.json({
-//   //   'error': ''
-//   // });
-//   res.redirect('/');
-// });
-
-// app.get('/logout', function(req, res) {
-//   req.session.destroy();
-//   res.redirect('/login');
-// });
-
+app.post('/signup', function(req, res) {
+  Account.register(new Account({
+    username: req.body.username
+  }), req.body.password, function(err, user) {
+    if (err) {
+      res.redirect('/signup');
+    } else {
+      passport.authenticate('local')(req, res, function() {
+        req.session.save(function(err) {
+          if (err) {
+            return next(err);
+          }
+          res.redirect('/login');
+        });
+      });
+    }
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  console.log('error 404')
   var err = new Error('Not Found');
   err.status = 404;
   next(err);

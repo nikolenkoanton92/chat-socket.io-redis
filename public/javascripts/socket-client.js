@@ -5,7 +5,7 @@ $(document).ready(function() {
   // show join box
   if (user === "") {
     $('#ask').show();
-    $('#ask input').focus();
+    $('#ask input#name').focus();
   } else { //rejoin using old session
     join(user);
   }
@@ -22,11 +22,12 @@ $(document).ready(function() {
    initializes Socket.io and the entire app.
    */
   $('#ask a').click(function() {
-    join($('#ask input').val());
+    join($('#ask input#name').val(), $('#ask input#password').val());
   });
 
-  function join(name) {
+  function join(name, password) {
     console.log('come to function join')
+    console.log(password)
     $('#ask').hide();
     $('#channel').show();
     $('input#message').focus();
@@ -90,7 +91,8 @@ $(document).ready(function() {
      When the user Logs in, send a HTTP POST to server w/ user name.
      */
     $.post('/user', {
-        "user": name
+        "username": name,
+        "password": password
       })
       .success(function() {
         console.log('ajax post join to socket.io')
