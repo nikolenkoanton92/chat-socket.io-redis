@@ -59,6 +59,21 @@ module.exports = function(io) {
       });
     });
 
+    socket.on('leave', function() {
+      var reply = JSON.stringify({
+        action: 'control',
+        user: session.user.username,
+        msg: ' left from channel'
+      });
+      client.rpush('mylist', reply, function(err, item) {
+        if (err) {
+          console.log('err : ', err);
+        } else {
+          pub.publish('chat', reply);
+        }
+      });
+    });
+
 
 
     /*

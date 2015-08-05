@@ -177,5 +177,9 @@ $(document).ready(function() {
       input.val('');
     });
 
+    $('#logout').click(function() {
+
+      socket.emit('leave', JSON.stringify({}));
+    });
   }
 });
