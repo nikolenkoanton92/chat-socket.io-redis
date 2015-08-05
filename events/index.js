@@ -2,6 +2,7 @@
 var redis = require('redis');
 var sub = redis.createClient();
 var pub = redis.createClient();
+var client = redis.createClient();
 sub.subscribe('chat');
 
 module.exports = function(io) {
@@ -20,7 +21,14 @@ module.exports = function(io) {
         user: session.user.username,
         msg: msg.msg
       });
-      pub.publish('chat', reply);
+      client.rpush('mylist', reply, function(err, item) {
+        if (err) {
+          console.log('error : ', err);
+        } else {
+          pub.publish('chat', reply);
+        }
+      });
+
     });
 
     /*
@@ -34,8 +42,24 @@ module.exports = function(io) {
         user: session.user.username,
         msg: ' joined the channel'
       });
-      pub.publish('chat', reply);
+      client.rpush('mylist', reply, function(err, item) {
+        if (err) {
+          console.log('error : ', err)
+        } else {
+          client.lrange('mylist', 0, -1, function(err, items) {
+
+            items.forEach(function(item) {
+              pub.publish('chat', item);
+            });
+
+            // pub.publish('chat', reply);
+          });
+
+        }
+      });
     });
+
+
 
     /*
      Use Redis' 'sub' (subscriber) client to listen to any message from Redis to server.

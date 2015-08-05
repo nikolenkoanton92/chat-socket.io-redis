@@ -163,7 +163,8 @@ $(document).ready(function() {
     });
 
     /*
-     When the user creates a new chat message, send it to server via socket.emit w/ 'chat' event/channel name
+    When the user creates a new chat message, send it to server via socket.emit w / 'chat'
+    event / channel name
      */
     $('#channel form').submit(function(event) {
       event.preventDefault();
